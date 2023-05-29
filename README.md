@@ -7,3 +7,5 @@ local cache module
 
 setting module
 
+i18n
+
