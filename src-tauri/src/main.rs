@@ -1,7 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-use tauri::{WindowBuilder, Manager};
-mod config;
+use tauri::{Manager, WindowBuilder};
 mod core;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -21,9 +20,9 @@ fn main() {
     tauri::Builder::default()
         .menu(core::init_menu())
         .on_menu_event(move |event| core::menu_even_handle(event))
-        .invoke_handler(tauri::generate_handler![greet,get_config])
-        .setup(|app|{
-            let main_window = app.get_window("main").unwrap();
+        .invoke_handler(tauri::generate_handler![greet, get_config])
+        .setup(|app| {
+            // let main_window = app.get_window("main").unwrap();
             Ok(())
         })
         .run(tauri::generate_context!())

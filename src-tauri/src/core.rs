@@ -28,7 +28,10 @@ pub fn init_menu() -> Menu {
 
 pub fn menu_even_handle(event: WindowMenuEvent<Wry>) {
     let window = event.window();
-    window.eval(&format!("window.location.replace('http://localhost:{}')", "1234"));
+    window.eval(&format!(
+        "window.location.replace('http://localhost:{}')",
+        "1234"
+    ));
     let handler = window.app_handle();
     match event.menu_item_id() {
         "settings" => {
@@ -60,9 +63,7 @@ pub fn menu_update(app: &mut App<Wry>) {}
 pub fn init_config() {
     let user_path = get_user_dir_path();
     //create a dir to save config
-    let conf_path = match create_dir_and_config_file(&user_path,|conf_path:&PathBuf|{
-
-    }) {
+    let conf_path = match create_dir_and_config_file(&user_path, |conf_path: &PathBuf| {}) {
         Ok(path) => path,
         Err(err) => panic!("{}", err),
     };
@@ -108,7 +109,7 @@ where
     if true {
         init_conf_cb(&config_file_path);
     }
-    println!("config file path: {:?}",config_file_path);
+    println!("config file path: {:?}", config_file_path);
     Ok(config_file_path)
 }
 
@@ -124,9 +125,7 @@ mod tests {
         let user_dir = user_dir_binding.to_str().unwrap_or("");
         print!("{:?}", user_dir);
         assert_eq!(
-            create_dir_and_config_file(&get_user_dir_path(),|conf_path:&PathBuf|{
-
-            })
+            create_dir_and_config_file(&get_user_dir_path(), |conf_path: &PathBuf| {})
                 .unwrap()
                 .to_str()
                 .unwrap(),
