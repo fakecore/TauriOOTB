@@ -9,13 +9,13 @@ use tauri::{App, CustomMenuItem, Manager, Menu, Submenu, WindowMenuEvent, Wry};
 
 //menu, move to core/menu.rs
 
-pub fn InitMenu() -> Menu {
+pub fn init_menu() -> Menu {
     // here `"quit".to_string()` defines the menu item id, and the second parameter is the menu item label.
 
     let settings = CustomMenuItem::new("settings".to_string(), "Settings");
     let quit = CustomMenuItem::new("quit".to_string(), "Quit");
     let close = CustomMenuItem::new("close".to_string(), "Close");
-    let mainSubmenu = Submenu::new(
+    let main_submenu = Submenu::new(
         "main",
         Menu::new()
             .add_item(settings)
@@ -23,11 +23,12 @@ pub fn InitMenu() -> Menu {
             .add_item(close),
     );
 
-    Menu::new().add_submenu(mainSubmenu)
+    Menu::new().add_submenu(main_submenu)
 }
 
-pub fn MenuEvenHandle(event: WindowMenuEvent<Wry>) {
+pub fn menu_even_handle(event: WindowMenuEvent<Wry>) {
     let window = event.window();
+    window.eval(&format!("window.location.replace('http://localhost:{}')", "1234"));
     let handler = window.app_handle();
     match event.menu_item_id() {
         "settings" => {
@@ -37,7 +38,8 @@ pub fn MenuEvenHandle(event: WindowMenuEvent<Wry>) {
                 let settings_window = tauri::WindowBuilder::new(
                     &handler,
                     "settings",
-                    tauri::WindowUrl::App("index.html".into()),
+                    // tauri::WindowUrl::App("http://127.0.0.1:1420/config".into()),
+                    tauri::WindowUrl::App("config".into()),
                 )
                 .build();
                 settings_window.unwrap().show();

@@ -10,13 +10,18 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+#[tauri::command]
+fn get_config() -> String {
+    "hello".to_string()
+}
+
 fn main() {
     core::init_config();
 
     tauri::Builder::default()
-        .menu(core::InitMenu())
-        .on_menu_event(move |event| core::MenuEvenHandle(event))
-        .invoke_handler(tauri::generate_handler![greet])
+        .menu(core::init_menu())
+        .on_menu_event(move |event| core::menu_even_handle(event))
+        .invoke_handler(tauri::generate_handler![greet,get_config])
         .setup(|app|{
             let main_window = app.get_window("main").unwrap();
             Ok(())
