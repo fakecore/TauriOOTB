@@ -1,11 +1,19 @@
 use std::{
     fs::{self, File},
-    io::Write,
-    path::{self, Path, PathBuf},
-    string,
+    path::{ Path, PathBuf},
 };
 
+use config::Config;
+use crate::config::Config as SysConfig;
+#[allow(deprecated)]
+use lazy_static::lazy_static;
+use std::error::Error;
+use std::sync::RwLock;
 use tauri::{App, CustomMenuItem, Manager, Menu, Submenu, WindowMenuEvent, Wry};
+
+lazy_static! {
+    static ref SETTINGS: RwLock<Config> = RwLock::new(Config::default());
+}
 
 //menu, move to core/menu.rs
 
@@ -60,14 +68,24 @@ pub fn menu_even_handle(event: WindowMenuEvent<Wry>) {
 
 pub fn menu_update(app: &mut App<Wry>) {}
 
-pub fn init_config() {
+pub fn init_config() -> Result<(),Box<dyn Error>>{
     let user_path = get_user_dir_path();
     //create a dir to save config
     let conf_path = match create_dir_and_config_file(&user_path, |conf_path: &PathBuf| {}) {
         Ok(path) => path,
         Err(err) => panic!("{}", err),
     };
+    // SETTINGS =RwLock::new();
+    SETTINGS.write().unwrap().clone_from(&Config::builder().add_source(config::File::with_name(conf_path.to_str().unwrap())).build().unwrap());
+    println!(
+        "{:?}",
+        SETTINGS.read().unwrap().clone()
+            .clone().try_deserialize::<SysConfig>()
+    );
+    Ok(())
 }
+
+
 
 fn get_user_dir_path() -> PathBuf {
     match home::home_dir() {
